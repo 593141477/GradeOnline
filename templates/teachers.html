@@ -3,27 +3,28 @@
 <head>
     <meta charset="utf-8">
     <title>Teachers</title>
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/angular.js"></script>
 </head>
 <body>
     <h3>Teacher List</h3>
     <table>
         <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>User</th>
             <th>Operation</th>
         </tr>
         {% for item in teachers %}
         <tr>
-            <th>{{item.id}}</th>
-            <th>{{item.name}}</th>
-            <th>{{item.user}}</th>
-            <th><button class="btn_pwd">Password</button><button class="btn_del">Del</button></th>
+            <td>{{item.name}}</td>
+            <td>{{item.user}}</td>
+            <td><button class="btn_pwd" onclick="set_pwd('{{item._id}}')">Reset</button>
+            <button class="btn_del" onclick="del('{{item._id}}')">Del</button></td>
         </tr>
         {% endfor %}
     </table>
     <h3>Add Teacher</h3>
-    <form action="update" method="post">
+    <form action="teachers/update" method="post">
         <input type="hidden" name="op" value="add">
         <p>
             <lable for="name">Name</lable>
@@ -34,5 +35,31 @@
         <p><input type="submit"></p>
 
     </form>
+    <script>
+        function random_pwd()
+        {
+            var text = "";
+            var possible = "0123456789";
+            for( var i=0; i < 6; i++ )
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            return text;
+        }
+        function del(id) {
+            if(!confirm('Confirm deletion?'))
+                return;
+            $.post('teachers/update', {'id':id, 'op':'del'}, function(){
+                location.reload();
+            });
+        }
+        function set_pwd(id) {
+            if(!confirm('Confirm resetting password?'))
+                return;
+            var p = random_pwd();
+            $.post('teachers/update', {'id':id,'op':'pwd','pwd':p}, function(){
+                alert("Password has been reset to "+p);
+                location.reload();
+            });
+        }
+    </script>
 </body>
 </html>

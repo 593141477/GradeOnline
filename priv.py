@@ -4,22 +4,21 @@ from urlparse import urlparse
 import re
 import teacher
 
-pattern = re.compile(r'/(\w+)\b')
+pattern = re.compile(r'^/(\w+)\b')
 
 def check_auth(username, password):
-    m = pattern.match(request.url)
+    m = pattern.match(request.path)
     if m:
         mod = m.group(1)
-        if session['priv'] == mod:
+        if ('priv' in session) and session['priv'] == mod:
             return True
         if mod == 'teacher':
             t = teacher.auth(username, password)
             if t:
-                session['priv'] == mod
+                session['priv'] = mod
             return t
         elif mod == 'admin':
-            pass
+            session['priv'] = mod
             return True
-
 
     return False

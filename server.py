@@ -1,16 +1,30 @@
 #!/usr/bin/env python
 from functools import wraps
-from flask import request, Response
+from flask import request, Response, render_template
 from flask import Flask
+
 app = Flask(__name__)
 
-import api
+# import api
+import priv
 import teacher
+
+def handle_static(res, name):
+    if not app.config['DEBUG']:
+        abort(403)
+        return
+    return send_from_directory(os.path.dirname(os.path.realpath(__file__))+'/static/'+res, name)
+
+@app.route('/js/<path:name>')
+def static_js(name):
+    return handle_static('js',name)
+@app.route('/css/<path:name>')
+def static_css(name):
+    return handle_static('css',name)
 
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
-
 
 def authenticate():
     """Sends a 401 response that enables basic auth"""
@@ -23,8 +37,10 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization
-        if not auth or not priv.check_auth(auth.username, auth.password):
+        if not auth:
             return authenticate()
+        elif not priv.check_auth(auth.username, auth.password):
+            return Response('No authorization', 403)
         return f(*args, **kwargs)
     return decorated
 
@@ -41,17 +57,17 @@ def teacher_load_grades():
 @app.route('/teacher/submit', methods=['POST'])
 @requires_auth
 def teacher_submit():
-    return render_template('secret_page.html')
+    return render_template('grades.html')
 
 @app.route('/admin/classes/<int:class_id>')
 @requires_auth
 def admin_classes(class_id):
-    return render_template('secret_page.html')
+    return render_template('classes.html')
 
 @app.route('/admin/classes/update', methods=['POST'])
 @requires_auth
 def admin_class_update():
-    return render_template('secret_page.html')
+    return render_template('classes.html')
 
 @app.route('/admin/teachers')
 @requires_auth
@@ -66,11 +82,13 @@ def admin_teacher_update():
 @app.route('/admin/schedule')
 @requires_auth
 def admin_schedule():
-    return render_template('secret_page.html')
+    return render_template('schedule.html')
 
 @app.route('/admin/schedule/update', methods=['POST'])
 @requires_auth
 def admin_schedule_update():
-    return render_template('secret_page.html')
+    return render_template('schedule.html')
 
+app.secret_key = 'super secret key 233'
+app.config['DEBUG']=True
 app.run()

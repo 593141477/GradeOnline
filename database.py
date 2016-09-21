@@ -1,6 +1,6 @@
 from pymongo import MongoClient
-client = MongoClient()
-db = client['GradeOnline']
 
 def getTable(name):
-	return db[name]
+    client = MongoClient()
+    db = client['GradeOnline']
+    return db[name]

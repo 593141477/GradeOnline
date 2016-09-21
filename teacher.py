@@ -1,6 +1,7 @@
 from flask import request,redirect
 import logging
 from database import getTable
+from bson.objectid import ObjectId
 from helper import hash_sha256
 
 TABLE_NAME = 'teachers'
@@ -22,12 +23,18 @@ def update():
 		op = request.form['op']
 		tab = getTable(TABLE_NAME)
 		if op == 'add':
-			add.insert_one({
+			tab.insert_one({
 				'name': request.form['name'],
-				'id': request.form['id'],
+				'user': request.form['user'],
 				'pwd': hash_sha256(request.form['pwd']),
+				})
+		elif op == 'del':
+			tab.delete_one({'_id': ObjectId(request.form['id'])})
+		elif op == 'pwd':
+			tab.update_one({'_id': ObjectId(request.form['id'])},
+				{'$set':{'pwd': hash_sha256(request.form['pwd'])}
 				})
 	except Exception, e:
 		logging.exception(e)
 
-	return redirect('.')
+	return redirect('admin/teachers')
