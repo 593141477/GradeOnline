@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Teachers</title>
+</head>
+<body>
+    <h3>Teacher List</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>User</th>
+            <th>Operation</th>
+        </tr>
+        {% for item in teachers %}
+        <tr>
+            <th>{{item.id}}</th>
+            <th>{{item.name}}</th>
+            <th>{{item.user}}</th>
+            <th><button class="btn_pwd">Password</button><button class="btn_del">Del</button></th>
+        </tr>
+        {% endfor %}
+    </table>
+    <h3>Add Teacher</h3>
+    <form action="update" method="post">
+        <input type="hidden" name="op" value="add">
+        <p>
+            <lable for="name">Name</lable>
+            <input type="text" required name="name">
+        </p>
+        <p><label for="user">User</label><input type="text" required="" name="user"></p>
+        <p><label for="pwd">Password</label><input type="text" required="" name="pwd"></p>
+        <p><input type="submit"></p>
+
+    </form>
+</body>
+</html>
