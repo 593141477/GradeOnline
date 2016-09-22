@@ -1,0 +1,23 @@
+<!doctype html>
+<html ng-app="app">
+  <head>
+    <script src="/js/angular.js"></script>
+    <script src="/js/angular-touch.js"></script>
+    <script src="/js/angular-animate.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
+    <script src="/js/ui-grid.js"></script>
+    <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
+    <link rel="stylesheet" href="/css/grid-students.css" type="text/css">
+    <script> students={{students|tojson}}; </script>
+  </head>
+
+  <body>
+    <div ng-controller="MainCtrl">
+      <div id="grid1" ui-grid="gridOptions" ui-grid-importer ui-grid-selection class="grid" ng-show="dataLoaded"></div>
+      <div ng-hide="dataLoaded">Loading...</div>
+    </div>
+    <script src="/static/js/students.js"></script>
+  </body>
+</html>

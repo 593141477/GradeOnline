@@ -1,6 +1,7 @@
 #!/usr/bin/env python
+import os
 from functools import wraps
-from flask import request, Response, render_template
+from flask import request, Response, render_template, send_from_directory
 from flask import Flask
 
 app = Flask(__name__)
@@ -8,6 +9,7 @@ app = Flask(__name__)
 # import api
 import priv
 import teacher
+import students
 
 def handle_static(res, name):
     if not app.config['DEBUG']:
@@ -62,12 +64,15 @@ def teacher_submit():
 @app.route('/admin/classes/<int:class_id>')
 @requires_auth
 def admin_classes(class_id):
-    return render_template('classes.html')
+    l = students.wrapQueryResult(students.getStudents(class_id))
+    return render_template('classes.html',students = l)
 
 @app.route('/admin/classes/update', methods=['POST'])
 @requires_auth
 def admin_class_update():
-    return render_template('classes.html')
+    students.bulkUpdate()
+    l=students.wrapQueryResult(students.getAllstudents())
+    return render_template('classes.html',students = l)
 
 @app.route('/admin/teachers')
 @requires_auth
