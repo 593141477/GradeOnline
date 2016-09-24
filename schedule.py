@@ -4,36 +4,21 @@ from database import getTable
 from bson.objectid import ObjectId
 import re
 
-TABLE_NAME = 'classes'
+TABLE_NAME = 'schedule'
 
-def getStudents(class_id):
+def getSchedule():
     tab = getTable(TABLE_NAME)
     return tab.find({'class_id': class_id})
-
-def setStudents(class_id, students):
-    tab = getTable(TABLE_NAME)
-    pass
 
 def bulkUpdate():
     errorNum=0
     succeNum=0
     tab = getTable(TABLE_NAME)
     post = request.get_json()
-    classes = {}
-
-    # print(post)
-
-    #put students with the same <class_id> into the same list
-    for student in post:
-        student.pop('$$hashKey',None)
-        if not classes.get(student['class_id']):
-            classes[student['class_id']] = []
-        classes[student['class_id']].append(student)
-        student.pop('class_id',None)
-
-    for class_id in classes:
-        # print(class_id,classes[class_id])
-        tab.update_one({'class_id':class_id},{"$set":{'students':classes[class_id]}},True)
+    print(post)
+    for s in post:
+        s.pop('$$hashKey',None)
+    tab.insert(post)
 
 def wrapQueryResult(result):
     l = []

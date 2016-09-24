@@ -10,6 +10,7 @@ app = Flask(__name__)
 import priv
 import teacher
 import students
+import schedule
 
 def handle_static(res, name):
     if not app.config['DEBUG']:
@@ -65,7 +66,7 @@ def teacher_submit():
 @requires_auth
 def admin_classes(class_id):
     l = students.wrapQueryResult(students.getStudents(class_id))
-    return render_template('classes.html',students = l)
+    return render_template('classes.html',students = l, class_id = class_id)
 
 @app.route('/admin/classes/update', methods=['POST'])
 @requires_auth
@@ -87,11 +88,15 @@ def admin_teacher_update():
 @app.route('/admin/schedule')
 @requires_auth
 def admin_schedule():
-    return render_template('schedule.html')
+    # t = teacher.getTeachers()
+    t = []
+    c = students.getClassList()
+    return render_template('schedule.html', class_list = c, teacher_list = t)
 
 @app.route('/admin/schedule/update', methods=['POST'])
 @requires_auth
 def admin_schedule_update():
+    schedule.bulkUpdate()
     return render_template('schedule.html')
 
 app.secret_key = 'super secret key 233'

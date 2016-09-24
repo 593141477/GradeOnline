@@ -2,15 +2,26 @@ var gridApp = angular.module('app', ['ngAnimate', 'ngTouch', 'ui.grid', 'ui.grid
 
 gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
 
-  $scope.data = students;
+  if(typeof(students[0]) == "undefined"){
+    $scope.data = [];
+  }
+  else if(typeof(students[0].students) == "undefined"){
+    $scope.data = [];
+  }
+  else{
+    $scope.data=students[0].students;
+  }
+  for (var s in $scope.data){
+    $scope.data[s]['class_id'] = class_id;
+  }
   $scope.dataLoaded = true;
 
   $scope.gridOptions = {
-    exporterMenuCsv: false,
     enableGridMenu: true,
     columnDefs: [
-      { name: 'class_id' },
-      { name: 'students' },
+      { name: 'class_id', visible:false},
+      { name: 'student_name', displayName: '姓名'},
+      { name: 'student_id', displayName: '学号'}
     ],
     gridMenuCustomItems: [
       {
@@ -36,10 +47,14 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
     data: 'data',
     importerDataAddCallback: function ( grid, newObjects ) {
       $scope.data = $scope.data.concat( newObjects );
+      for (var s in $scope.data){
+        $scope.data[s]['class_id'] = class_id;
+      }
+
     },
     onRegisterApi: function(gridApi){
       $scope.gridApi = gridApi;
-    }
+    },
   };
 
   // $http.get('http://ui-grid.info/data/100.json').success(function(data) {
