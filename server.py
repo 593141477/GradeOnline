@@ -88,8 +88,7 @@ def admin_teacher_update():
 @app.route('/admin/schedule')
 @requires_auth
 def admin_schedule():
-    # t = teacher.getTeachers()
-    t = []
+    t = teacher.getTeachers()
     c = students.getClassList()
     return render_template('schedule.html', class_list = c, teacher_list = t)
 

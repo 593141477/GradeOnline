@@ -8,7 +8,10 @@ TABLE_NAME = 'teachers'
 
 def getTeachers():
 	tab = getTable(TABLE_NAME)
-	return tab.find()
+	teacherList = []
+	for i in tab.find({}, ['user','name']):
+		teacherList.append({'_id':str(i['_id']), 'name': i['name']})
+	return teacherList
 
 def auth(username, pwd):
 	tab = getTable(TABLE_NAME)

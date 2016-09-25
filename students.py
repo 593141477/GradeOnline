@@ -48,9 +48,8 @@ def getAllstudents():
 
 def getClassList():
     tab = getTable(TABLE_NAME)
-    class_list = set()
+    class_list = list()
     result = tab.find()
     for mClass in result:
-        class_list.add(mClass['class_id'])
-    class_list = list(class_list)
+        class_list.append({'_id': mClass['class_id']})
     return class_list

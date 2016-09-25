@@ -8,20 +8,20 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
   metaClassList = [];
   for(i in class_list)
   {
-      metaClassList[i] = {id:class_list[i], class_id:class_list[i]}
+      metaClassList[i] = {id:class_list[i]._id, class_id:class_list[i]._id}
   }
 
   metaTeacherList = [];
   for(i in teacher_list)
   {
-      metaTeacherList[i] = {id:teacher_list[i], teacher:teacher_list[i]}
+      metaTeacherList[i] = {id:teacher_list[i]._id, teacher:teacher_list[i].name}
   }
 
   $scope.gridOptions = {
     enableGridMenu: true,
     columnDefs: [
       { name: 'date', displayName:'上课日期',type: 'shortdate', cellFilter: 'date:\'MM/dd\'', enableCellEdit: true},
-      { name: 'class_id', displayName:'课号', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '20%', editDropdownValueLabel: 'class_id', editDropdownOptionsArray:metaClassList},
+      { name: 'class_id', displayName:'班级', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '20%', editDropdownValueLabel: 'class_id', editDropdownOptionsArray:metaClassList},
       { name: 'teacher', displayName: '主讲教师', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '20%', editDropdownValueLabel: 'teacher', editDropdownOptionsArray:metaTeacherList}
     ],
     gridMenuCustomItems: [
