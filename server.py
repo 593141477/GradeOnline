@@ -61,16 +61,28 @@ def teacher_submit():
     grades.bulkUpdate()
     return 'success'
 
-@app.route('/admin/classes/<int:class_id>')
+@app.route('/admin/')
 @requires_auth
-def admin_classes(class_id):
-    l = students.wrapQueryResult(students.getStudents(class_id))
-    return render_template('classes.html',students = l, class_id = class_id)
+def admin_index():
+    return render_template('admin.html')
+
+@app.route('/admin/classes/<string:class_id>')
+@requires_auth
+def admin_classes(class_id='*'):
+    class_list = students.getClassList()
+    l = students.wrapQueryResult(students.getStudents(class_id)) if class_id!='*' else []
+    return render_template('classes.html',class_list=class_list,students = l, class_id = class_id)
 
 @app.route('/admin/classes/update', methods=['POST'])
 @requires_auth
 def admin_class_update():
     students.bulkUpdate()
+    return 'success'
+
+@app.route('/admin/classes/new', methods=['POST'])
+@requires_auth
+def admin_class_new():
+    students.new()
     return 'success'
 
 @app.route('/admin/teachers')

@@ -1,23 +1,51 @@
 <!doctype html>
 <html ng-app="app">
   <head>
-    <script src="/js/angular.js"></script>
-    <script src="/js/angular-touch.js"></script>
-    <script src="/js/angular-animate.js"></script>
-    <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+    <meta charset="utf-8">
+    <title>Student Management</title>
+    <script src="../../static/js/jquery.js"></script>
+    <script src="../../static/js/angular.js"></script>
+    <script src="../../static/js/angular-touch.js"></script>
+    <script src="../../static/js/angular-animate.js"></script>
+    <script src="../../static/js/csv.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
-    <script src="/js/ui-grid.js"></script>
-    <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
-    <link rel="stylesheet" href="/css/grid-students.css" type="text/css">
-    <script> students={{students|tojson}}; class_id={{class_id}}</script>
+    <script src="../../static/js/ui-grid.js"></script>
+    <link rel="stylesheet" href="../../static/css/ui-grid.css" type="text/css">
+    <link rel="stylesheet" href="../../static/css/grid-students.css" type="text/css">
+    <script> students={{students|tojson}}; class_id='{{class_id}}'; class_list={{class_list|tojson}};</script>
   </head>
 
   <body>
+    <a href="..">&lt; Back</a>
+    <h3>Student Management</h3>
+    <select name="class_slt" id="class_slt">
+      <option value="*"></option>
+      {% for item in class_list %}
+      <option value="{{item._id}}">{{item.name}}</option>
+      {% endfor %}
+    </select>
+    <button id="class_new">New Class</button>
     <div ng-controller="MainCtrl">
       <div id="grid1" ui-grid="gridOptions" ui-grid-importer ui-grid-selection class="grid" ng-show="dataLoaded"></div>
       <div ng-hide="dataLoaded">Loading...</div>
     </div>
-    <script src="/static/js/classes.js"></script>
+    <script src="../../static/js/classes.js"></script>
+    <script>
+      $(function(){
+        $('#class_new').click(function(E){
+          var name = prompt("Class name:");
+          $.post('./new', {name: name}, function(E){
+            location.reload();
+          });
+          return false;
+        });
+        $('#class_slt').val(class_id);
+        $('#class_slt').change(function(E){
+          var v = $(this).val();
+          location.href = './'+v;
+        });
+      });
+    </script>
   </body>
 </html>

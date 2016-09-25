@@ -1,23 +1,27 @@
 <!doctype html>
 <html ng-app="app">
   <head>
-    <script src="/js/angular.js"></script>
-    <script src="/js/angular-touch.js"></script>
-    <script src="/js/angular-animate.js"></script>
-    <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+    <meta charset="utf-8">
+    <title>Course Schedule</title>
+    <script src="../../static/js/angular.js"></script>
+    <script src="../../static/js/angular-touch.js"></script>
+    <script src="../../static/js/angular-animate.js"></script>
+    <script src="../../static/js/csv.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
-    <script src="/js/ui-grid.js"></script>
+    <script src="../../static/js/ui-grid.js"></script>
     <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
-    <link rel="stylesheet" href="/css/grid-students.css" type="text/css">
+    <link rel="stylesheet" href="../../static/css/grid-students.css" type="text/css">
     <script> class_list = {{class_list|tojson}}; teacher_list = {{teacher_list|tojson}}; schedule = {{schedule|tojson}};</script>
   </head>
 
   <body>
+    <a href=".">&lt; Back</a>
+    <h3>Course Schedule</h3>
     <div ng-controller="MainCtrl">
       <div id="grid1" ui-grid="gridOptions" ui-grid-importer ui-grid-selection ui-grid-edit class="grid" ng-show="dataLoaded"></div>
       <div ng-hide="dataLoaded">Loading...</div>
     </div>
-    <script src="/static/js/schedule.js"></script>
+    <script src="../../static/js/schedule.js"></script>
   </body>
 </html>

@@ -11,30 +11,27 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
   else{
     $scope.data=students[0].students;
   }
-  for (var s in $scope.data){
-    $scope.data[s]['class_id'] = class_id;
-  }
   $scope.dataLoaded = true;
 
   $scope.gridOptions = {
     enableGridMenu: true,
     columnDefs: [
-      { name: 'class_id', visible:false},
       { name: 'student_name', displayName: '姓名'},
-      { name: 'student_id', displayName: '学号'}
+      { name: 'student_id', displayName: '学号'},
+      { name: 'formal_class', displayName: '行政班级'},
     ],
     gridMenuCustomItems: [
       {
-        title: 'submit',
+        title: '提交',
         action: function ($event) {
-          $http.post('/admin/classes/update',JSON.stringify($scope.data)).then(function (response) {
+          $http.post('/admin/classes/update',JSON.stringify({class_id:class_id, data:$scope.data})).then(function (response) {
             if (response.data)
               alert("Submitted Successfully!");
           }, function (response) {
               alert("Error!!!");
           });
         },
-        order: 210
+        order: 410
       },
       {
         title: 'clean',
@@ -46,12 +43,25 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
     ],
     data: 'data',
     importerDataAddCallback: function ( grid, newObjects ) {
+      // console.log('importerDataAddCallback');
+      // console.log(newObjects)
       $scope.data = $scope.data.concat( newObjects );
-      for (var s in $scope.data){
-        $scope.data[s]['class_id'] = class_id;
-      }
 
     },
+    // importerProcessHeaders: function( grid,headerArray ) {
+    //   console.log('importerProcessHeaders');
+    //   console.log(headerArray);
+    //   DBG = headerArray;
+    //   headerArray.forEach( function( value, index ) {
+    //     console.log(value)
+    //   });
+    //   return headerArray;
+    // },
+    // importerObjectCallback: function ( grid, newObject ) {
+    //   console.log('importerObjectCallback');
+    //   console.log(newObject);
+    //   return newObject;
+    // },
     onRegisterApi: function(gridApi){
       $scope.gridApi = gridApi;
     },

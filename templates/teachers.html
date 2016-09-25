@@ -7,6 +7,7 @@
     <script src="../static/js/angular.js"></script>
 </head>
 <body>
+    <a href=".">&lt; Back</a>
     <h3>Teacher List</h3>
     <table>
         <tr>
@@ -16,9 +17,9 @@
         </tr>
         {% for item in teachers %}
         <tr>
-            <td>{{item.name}}</td>
-            <td>{{item.user}}</td>
-            <td><button class="btn_pwd" onclick="set_pwd('{{item._id}}')">Reset</button>
+            <td width="20%">{{item.name}}</td>
+            <td width="30%">{{item.user}}</td>
+            <td width="50%"><button class="btn_pwd" onclick="set_pwd('{{item._id}}')">Reset</button>
             <button class="btn_del" onclick="del('{{item._id}}')">Del</button></td>
         </tr>
         {% endfor %}

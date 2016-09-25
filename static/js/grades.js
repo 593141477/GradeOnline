@@ -44,7 +44,7 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
       {
         title: 'submit',
         action: function ($event) {
-          $http.post('/admin/schedule/update',JSON.stringify($scope.data)).then(function (response) {
+          $http.post('/admin/schedule/update',JSON.stringify({class_id:class_id,data:$scope.data})).then(function (response) {
             if (response.data)
               alert("Submitted Successfully!");
           }, function (response) {

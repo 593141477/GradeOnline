@@ -23,6 +23,7 @@ def wrapQueryResult(result):
     for s in result:
         s['_id']=str(s['_id'])
         s['teacher']=str(s['teacher'])
+        s['class_id']=str(s['class_id'])
         l.append(s)
     return l
 
@@ -31,14 +32,17 @@ def bulkUpdate():
     succeNum=0
     tab = getTable(TABLE_NAME)
     post = request.get_json()
-    print(post)
+    l = []
     for s in post:
-        s['teacher']=ObjectId(s['teacher'])
-        s.pop('$$hashKey',None)
-    ret = tab.insert_many(post)
+        l.append({
+            'teacher': ObjectId(s['teacher']),
+            'date': s['date'],
+            'class_id': ObjectId(s['class_id'])
+            })
+    ret = tab.insert_many(l)
     assert ret.acknowledged
     tab.remove()
-    ret = tab.insert_many(post)
+    ret = tab.insert_many(l)
     assert ret.acknowledged
     
 
