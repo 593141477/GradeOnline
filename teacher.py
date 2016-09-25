@@ -18,8 +18,8 @@ def auth(username, pwd):
 	pwd = hash_sha256(pwd)
 	r = tab.find_one({'user':username, 'pwd': pwd})
 	if r:
-		return True
-	return False
+		return str(r['_id'])
+	return None
 
 def update():
 	try:

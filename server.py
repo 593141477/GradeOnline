@@ -2,7 +2,7 @@
 import os
 from functools import wraps
 from flask import request, Response, render_template, send_from_directory
-from flask import Flask
+from flask import Flask, session
 
 app = Flask(__name__)
 
@@ -11,6 +11,7 @@ import priv
 import teacher
 import students
 import schedule
+import grades
 
 def handle_static(res, name):
     if not app.config['DEBUG']:
@@ -47,20 +48,18 @@ def requires_auth(f):
         return f(*args, **kwargs)
     return decorated
 
-@app.route('/teacher/grades')
+@app.route('/teacher/grades/show/<string:Id>')
 @requires_auth
-def teacher_grades():
-    return render_template('grades.html')
+def teacher_grades(Id='*'):
+    s = schedule.wrapQueryResult(schedule.getScheduleForTeacher(session['teacher_id']))
+    g = grades.getGradesByScheduleId(Id) if Id!='*' else {}
+    return render_template('grades.html',grades=g,schedule_list=s)
 
-@app.route('/teacher/load_grades.json')
-@requires_auth
-def teacher_load_grades():
-    return render_template('secret_page.html')
-
-@app.route('/teacher/submit', methods=['POST'])
+@app.route('/teacher/grades/submit', methods=['POST'])
 @requires_auth
 def teacher_submit():
-    return render_template('grades.html')
+    grades.bulkUpdate()
+    return 'success'
 
 @app.route('/admin/classes/<int:class_id>')
 @requires_auth
@@ -72,8 +71,7 @@ def admin_classes(class_id):
 @requires_auth
 def admin_class_update():
     students.bulkUpdate()
-    l=students.wrapQueryResult(students.getAllstudents())
-    return render_template('classes.html',students = l)
+    return 'success'
 
 @app.route('/admin/teachers')
 @requires_auth
@@ -88,15 +86,19 @@ def admin_teacher_update():
 @app.route('/admin/schedule')
 @requires_auth
 def admin_schedule():
+    s = schedule.wrapQueryResult(schedule.getSchedule())
     t = teacher.getTeachers()
     c = students.getClassList()
-    return render_template('schedule.html', class_list = c, teacher_list = t)
+    return render_template('schedule.html', class_list = c, teacher_list = t, schedule=s)
 
 @app.route('/admin/schedule/update', methods=['POST'])
 @requires_auth
 def admin_schedule_update():
     schedule.bulkUpdate()
-    return render_template('schedule.html')
+    s = schedule.wrapQueryResult(schedule.getSchedule())
+    t = teacher.getTeachers()
+    c = students.getClassList()
+    return render_template('schedule.html', class_list = c, teacher_list = t, schedule=s)
 
 app.secret_key = 'super secret key 233'
 app.config['DEBUG']=True

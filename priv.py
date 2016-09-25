@@ -16,6 +16,7 @@ def check_auth(username, password):
             t = teacher.auth(username, password)
             if t:
                 session['priv'] = mod
+                session['teacher_id'] = t
             return t
         elif mod == 'admin':
             session['priv'] = mod

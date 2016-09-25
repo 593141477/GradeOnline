@@ -10,7 +10,7 @@
     <script src="/js/ui-grid.js"></script>
     <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
     <link rel="stylesheet" href="/css/grid-students.css" type="text/css">
-    <script> class_list = {{class_list|tojson}}; teacher_list = {{teacher_list|tojson}}; schedule = {{schedule|tojson}};</script>
+    <script> schedule_list = {{schedule_list|tojson}}; grades = {{grades|tojson}};</script>
   </head>
 
   <body>
@@ -18,6 +18,6 @@
       <div id="grid1" ui-grid="gridOptions" ui-grid-importer ui-grid-selection ui-grid-edit class="grid" ng-show="dataLoaded"></div>
       <div ng-hide="dataLoaded">Loading...</div>
     </div>
-    <script src="/static/js/schedule.js"></script>
+    <script src="/static/js/grades.js"></script>
   </body>
 </html>
