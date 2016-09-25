@@ -48,14 +48,14 @@ def requires_auth(f):
         return f(*args, **kwargs)
     return decorated
 
-@app.route('/teacher/grades/show/<string:Id>')
+@app.route('/teacher/grades/<string:Id>')
 @requires_auth
 def teacher_grades(Id='*'):
     s = schedule.wrapQueryResult(schedule.getScheduleForTeacher(session['teacher_id']))
     g = grades.getGradesByScheduleId(Id) if Id!='*' else {}
-    return render_template('grades.html',grades=g,schedule_list=s)
+    return render_template('grades.html',grades=g,schedule_list=s,schedule_id=Id)
 
-@app.route('/teacher/grades/submit', methods=['POST'])
+@app.route('/teacher/grades/update', methods=['POST'])
 @requires_auth
 def teacher_submit():
     grades.bulkUpdate()

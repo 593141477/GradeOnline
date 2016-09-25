@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Grades</title>
+    <script src="../../static/js/jquery.js"></script>
     <script src="../../static/js/angular.js"></script>
     <script src="../../static/js/angular-touch.js"></script>
     <script src="../../static/js/angular-animate.js"></script>
@@ -12,16 +13,29 @@
     <script src="../../static/js/ui-grid.js"></script>
     <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
     <link rel="stylesheet" href="../../static/css/grid-students.css" type="text/css">
-    <script> schedule_list = {{schedule_list|tojson}}; grades = {{grades|tojson}};</script>
+    <script> schedule_list = {{schedule_list|tojson}};schedule_id='{{schedule_id}}'; grades = {{grades|tojson}};</script>
   </head>
 
   <body>
-    <a href=".">&lt; Back</a>
+    <!-- <a href="./*">&lt; Back</a> -->
     <h3>Grades</h3>
+    <select name="sch_slt" id="sch_slt">
+      <option value="*"></option>
+      {% for item in schedule_list %}
+      <option value="{{item._id}}">第{{item.date.week}}周周{{item.date.dow}}第{{item.date.cod}}节</option>
+      {% endfor %}
+    </select>
     <div ng-controller="MainCtrl">
       <div id="grid1" ui-grid="gridOptions" ui-grid-importer ui-grid-selection ui-grid-edit class="grid" ng-show="dataLoaded"></div>
       <div ng-hide="dataLoaded">Loading...</div>
     </div>
+    <script>
+        $('#sch_slt').val(schedule_id);
+        $('#sch_slt').change(function(E){
+          var v = $(this).val();
+          location.href = './'+v;
+        });
+    </script>
     <script src="../../static/js/grades.js"></script>
   </body>
 </html>

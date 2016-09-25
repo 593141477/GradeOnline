@@ -10,6 +10,13 @@ def getStudents(class_id):
     tab = getTable(TABLE_NAME)
     return tab.find({'_id': ObjectId(class_id)})
 
+def getStudentIds(class_id):
+    tab = getTable(TABLE_NAME)
+    l=[]
+    for i in tab.find_one({'_id': ObjectId(class_id)})['students']:
+        l.append(i['student_id'])
+    return l
+
 def new():
     name = request.form['name']
     assert len(name)>0

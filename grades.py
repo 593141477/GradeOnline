@@ -2,7 +2,7 @@ from flask import request, Response, session
 import logging
 from database import getTable
 from bson.objectid import ObjectId
-import schedule
+import schedule, students
 
 TABLE_NAME = 'grades'
 
@@ -13,11 +13,11 @@ def bulkUpdate():
     assert sch['teacher']==ObjectId(session['teacher_id'])
     stu = students.getStudentIds(sch['class_id'])
     glist = []
-    for item in post['grades']:
+    for item in post['data']:
         sid = item['student_id']
         assert sid in stu
         assert not(item['grade'] is None)
-        v = int(item['grade'])
+        v = float(item['grade'])
         assert v>=0 and v<=100
         glist.append({'student_id': sid, 'grade': v})
     tab.update({
@@ -25,14 +25,14 @@ def bulkUpdate():
         'date': sch['date'], 
         'teacher': sch['teacher']},
         {'$set':{'grade_list': glist}},
-        {'upsert':True})
+        upsert=True)
 
 def getGradesByScheduleId(schedule_id):
     tab = getTable(TABLE_NAME)
     sch = schedule.getOneSchedule(schedule_id)
     assert sch['teacher']==ObjectId(session['teacher_id'])
     slist = []
-    for i in students.getStudents(sch['class_id']):
+    for i in students.getStudents(sch['class_id'])[0]['students']:
         slist.append({
             'student_name': i['student_name'],
             'student_id': i['student_id']
