@@ -3,6 +3,7 @@ from flask import request, Response, session
 from urlparse import urlparse
 import re
 import teacher
+from config import ADMIN_USERNAME, ADMIN_PASSWD
 
 pattern = re.compile(r'^/(\w+)\b')
 
@@ -10,16 +11,23 @@ def check_auth(username, password):
     m = pattern.match(request.path)
     if m:
         mod = m.group(1)
-        if ('priv' in session) and session['priv'] == mod:
-            return True
+        if ('priv' in session):
+            if session['priv'] == mod:
+                return 0
+            else:
+                del session['priv']
+                return 2
         if mod == 'teacher':
             t = teacher.auth(username, password)
             if t:
                 session['priv'] = mod
                 session['teacher_id'] = t
-            return t
+                return 0
+            return 2
         elif mod == 'admin':
-            session['priv'] = mod
-            return True
+            if username==ADMIN_USERNAME and password==ADMIN_PASSWD:
+                session['priv'] = mod
+                return 0
+            return 2
 
-    return False
+    return -1

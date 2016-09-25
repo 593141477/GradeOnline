@@ -33,6 +33,13 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
         },
         order: 410
       },
+      // {
+      //   title: '增加',
+      //   action: function ($event) {
+      //     $scope.data = $scope.data.concat([{}]);
+      //   },
+      //   order: 320
+      // },
       {
         title: 'clean',
         action: function ($event) {

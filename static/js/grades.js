@@ -10,7 +10,8 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
     columnDefs: [
       { name: 'student_name',enableCellEdit:false, displayName: '姓名'},
       { name: 'student_id',enableCellEdit:false, displayName: '学号'},
-      { name: 'grade', enableCellEdit: true,displayName: '成绩'},
+      { name: 'grade', enableCellEdit: true,displayName: '成绩',
+        editableCellTemplate: '<div><form name="inputForm"><input type="number" min="0" max="100" ng-class="\'colt\' + col.uid" ui-grid-editor ng-model="MODEL_COL_FIELD"></form></div>'},
     ],
     gridMenuCustomItems: [
       {

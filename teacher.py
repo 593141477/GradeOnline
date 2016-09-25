@@ -17,6 +17,11 @@ def getTeachers():
 			})
 	return teacherList
 
+def getTeacherById(teacher_id):
+	tab = getTable(TABLE_NAME)
+	
+	return tab.find_one({'_id': ObjectId(teacher_id)}, ['user','name'])
+
 def auth(username, pwd):
 	tab = getTable(TABLE_NAME)
 	pwd = hash_sha256(pwd)

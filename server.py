@@ -2,7 +2,7 @@
 import os
 from functools import wraps
 from flask import request, Response, render_template, send_from_directory
-from flask import Flask, session
+from flask import Flask, session, redirect, url_for
 
 app = Flask(__name__)
 
@@ -14,9 +14,9 @@ import schedule
 import grades
 
 def handle_static(res, name):
-    if not app.config['DEBUG']:
-        abort(403)
-        return
+    # if not app.config['DEBUG']:
+    #     abort(403)
+    #     return
     return send_from_directory(os.path.dirname(os.path.realpath(__file__))+'/static/'+res, name)
 
 @app.route('/js/<path:name>')
@@ -28,7 +28,7 @@ def static_css(name):
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return redirect('./teacher/grades/*')
 
 def authenticate():
     """Sends a 401 response that enables basic auth"""
@@ -43,7 +43,10 @@ def requires_auth(f):
         auth = request.authorization
         if not auth:
             return authenticate()
-        elif not priv.check_auth(auth.username, auth.password):
+        ret = priv.check_auth(auth.username, auth.password)
+        if ret==2:
+            return authenticate()
+        elif ret != 0:
             return Response('No authorization', 403)
         return f(*args, **kwargs)
     return decorated
@@ -53,7 +56,8 @@ def requires_auth(f):
 def teacher_grades(Id='*'):
     s = schedule.wrapQueryResult(schedule.getScheduleForTeacher(session['teacher_id']))
     g = grades.getGradesByScheduleId(Id) if Id!='*' else {}
-    return render_template('grades.html',grades=g,schedule_list=s,schedule_id=Id)
+    t = teacher.getTeacherById(session['teacher_id'])
+    return render_template('grades.html',grades=g,schedule_list=s,schedule_id=Id,teacher=t)
 
 @app.route('/teacher/grades/update', methods=['POST'])
 @requires_auth

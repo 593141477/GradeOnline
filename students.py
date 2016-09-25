@@ -36,6 +36,8 @@ def bulkUpdate():
     #put students with the same <class_id> into the same list
     for student in post['data']:
         student.pop('$$hashKey',None)
+        assert len(student['student_id'])>0
+        assert len(student['student_name'])>0
 
     tab.update_one({'_id':class_id},{"$set":{'students': post['data']}})
 
