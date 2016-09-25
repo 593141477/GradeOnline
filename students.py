@@ -39,7 +39,7 @@ def bulkUpdate():
         assert (student['student_id'])
         assert (student['student_name'])
 
-    tab.update_one({'_id':class_id},{"$set":{'students': post['data']}})
+    tab.update({'_id':class_id},{"$set":{'students': post['data']}})
 
 def wrapQueryResult(result):
     l = []
