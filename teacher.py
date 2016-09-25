@@ -19,7 +19,7 @@ def getTeachers():
 
 def getTeacherById(teacher_id):
 	tab = getTable(TABLE_NAME)
-	
+
 	return tab.find_one({'_id': ObjectId(teacher_id)}, ['user','name'])
 
 def auth(username, pwd):
@@ -35,15 +35,15 @@ def update():
 		op = request.form['op']
 		tab = getTable(TABLE_NAME)
 		if op == 'add':
-			tab.insert_one({
+			tab.insert({
 				'name': request.form['name'],
 				'user': request.form['user'],
 				'pwd': hash_sha256(request.form['pwd']),
 				})
 		elif op == 'del':
-			tab.delete_one({'_id': ObjectId(request.form['id'])})
+			tab.remove({'_id': ObjectId(request.form['id'])})
 		elif op == 'pwd':
-			tab.update_one({'_id': ObjectId(request.form['id'])},
+			tab.update({'_id': ObjectId(request.form['id'])},
 				{'$set':{'pwd': hash_sha256(request.form['pwd'])}
 				})
 	except Exception, e:
