@@ -50,8 +50,16 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
     ],
     data: 'data',
     importerDataAddCallback: function ( grid, newObjects ) {
-      // console.log('importerDataAddCallback');
-      // console.log(newObjects)
+      var displayName2name = {};
+      $scope.gridOptions.columnDefs.forEach(function(value){
+        displayName2name[value.displayName] = value.name;
+      });
+      newObjects.forEach(function(row){
+        for(var prop in row){
+          if(displayName2name[prop]!==null)
+            row[displayName2name[prop]]=row[prop];
+        };
+      });
       $scope.data = $scope.data.concat( newObjects );
 
     },
