@@ -6,6 +6,11 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
   $scope.data = grades;
   $scope.dataLoaded = true;
   $scope.action_submit = function ($event) {
+    var data = $scope.data;
+    for (var i = data.length - 1; i >= 0; i--) {
+      data[i].grade = data[i].grade || 0;
+    }
+    // console.log(data)
     $http.post('./update',JSON.stringify({schedule_id:schedule_id,data:$scope.data})).then(function (response) {
       if (response.data){
         $scope.dirty = 0;
