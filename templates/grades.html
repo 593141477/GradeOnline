@@ -29,6 +29,8 @@
     <div ng-controller="MainCtrl">
       <div id="grid1" ui-grid="gridOptions" ui-grid-importer ui-grid-selection ui-grid-edit class="grid" ng-show="dataLoaded"></div>
       <div ng-hide="dataLoaded">Loading...</div>
+      <div ng-hide="dirty<=0"><button ng-click="submit()">保存</button></div>
+      <!-- <div><button ng-click="test()">Test</button></div> -->
     </div>
     <script>
         $('#sch_slt').val(schedule_id);

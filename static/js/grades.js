@@ -2,10 +2,22 @@ var gridApp = angular.module('app', ['ngAnimate', 'ngTouch', 'ui.grid', 'ui.grid
 
 gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
 
+  $scope.dirty=-1;
   $scope.data = grades;
   $scope.dataLoaded = true;
+  $scope.action_submit = function ($event) {
+    $http.post('./update',JSON.stringify({schedule_id:schedule_id,data:$scope.data})).then(function (response) {
+      if (response.data){
+        $scope.dirty = 0;
+        alert("Submitted Successfully!");
+      }
+    }, function (response) {
+        alert("Error!!!");
+    });
+  };
 
   $scope.gridOptions = {
+    enableCellEditOnFocus: true,
     enableGridMenu: true,
     columnDefs: [
       { name: 'student_name',enableCellEdit:false, displayName: '姓名'},
@@ -16,27 +28,27 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
     gridMenuCustomItems: [
       {
         title: '提交',
-        action: function ($event) {
-          $http.post('./update',JSON.stringify({schedule_id:schedule_id,data:$scope.data})).then(function (response) {
-            if (response.data)
-              alert("Submitted Successfully!");
-          }, function (response) {
-              alert("Error!!!");
-          });
-        },
+        action: $scope.action_submit,
         order: 410
       },
-      {
-        title: 'clean',
-        action: function ($event) {
-          $scope.data = [];
-        },
-        order: 310
-      }
     ],
     data: 'data',
     onRegisterApi: function(gridApi){
       $scope.gridApi = gridApi;
+      gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef){
+        // console.log(rowEntity)
+        $scope.dirty++;
+      });
     }
+  };
+  $scope.$watch('data', function(n,o){
+    $scope.dirty++;
+    // console.log($scope.dirty)
+  });
+  $scope.submit = function(){
+    $scope.action_submit();
+  };
+  $scope.test = function(){
+    console.log($scope.data)
   };
 }]);
