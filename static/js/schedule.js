@@ -31,6 +31,7 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
 
 
   $scope.gridOptions = {
+    enableCellEditOnFocus: true,
     enableGridMenu: true,
     columnDefs: [
       // { name: 'date', displayName:'上课日期',type: 'shortdate', cellFilter: 'date:\'MM/dd\'', enableCellEdit: true},
@@ -38,7 +39,8 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
       { name: 'date.dow', displayName:'星期', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '15%', editDropdownValueLabel: 'dow', editDropdownOptionsArray:dayOfWeek},
       { name: 'date.cod', displayName:'节数', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '15%', editDropdownValueLabel: 'cod', editDropdownOptionsArray:classOfDay},
       { name: 'class_id', displayName:'班级', cellFilter:'classDisplay', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '20%', editDropdownValueLabel: 'class_name', editDropdownOptionsArray:metaClassList},
-      { name: 'teacher', displayName: '主讲教师', cellFilter:'teacherDisplay', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '20%', editDropdownValueLabel: 'teacher', editDropdownOptionsArray:metaTeacherList}
+      { name: 'content', displayName: '内容', enableCellEdit: true, width: '15%'},
+      { name: 'teacher', displayName: '主讲教师', cellFilter:'teacherDisplay', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '20%', editDropdownValueLabel: 'teacher', editDropdownOptionsArray:metaTeacherList},
     ],
     gridMenuCustomItems: [
       {

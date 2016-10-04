@@ -19,11 +19,11 @@
   <body>
     <!-- <a href="./*">&lt; Back</a> -->
     <h3>Grades</h3>
-    <span>{{teacher.name}}</span>
+    <div>{{teacher.name}}</div>
     <select name="sch_slt" id="sch_slt">
       <option value="*"></option>
       {% for item in schedule_list %}
-      <option value="{{item._id}}">第{{item.date.week}}周周{{item.date.dow}}第{{item.date.cod}}节</option>
+      <option value="{{item._id}}">{{item.content}}&nbsp;-&nbsp;第{{item.date.week}}周周{{item.date.dow}}第{{item.date.cod}}节</option>
       {% endfor %}
     </select>
     <div ng-controller="MainCtrl">
