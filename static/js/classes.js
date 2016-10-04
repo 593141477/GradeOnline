@@ -92,5 +92,8 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
   $scope.submit = function(){
     $scope.action_submit();
   };
+  window.onbeforeunload = function(){
+    return $scope.dirty<=0 ? null : '修改尚未保存，是否退出？';
+  }
 
 }]);

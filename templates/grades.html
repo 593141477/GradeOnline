@@ -36,7 +36,13 @@
         $('#sch_slt').val(schedule_id);
         $('#sch_slt').change(function(E){
           var v = $(this).val();
-          location.href = './'+v;
+          if(v != schedule_id){
+            location.href = './'+v;
+            setTimeout(function(){
+              // console.log('timout')
+              $('#sch_slt').val(schedule_id);
+            },500);
+          }
         });
     </script>
     <script src="../../static/js/grades.js"></script>

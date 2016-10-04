@@ -56,4 +56,7 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
   $scope.test = function(){
     console.log($scope.data)
   };
+  window.onbeforeunload = function(){
+    return $scope.dirty<=0 ? null : '修改尚未保存，是否退出？';
+  }
 }]);
