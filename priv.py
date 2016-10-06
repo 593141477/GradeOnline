@@ -15,8 +15,7 @@ def check_auth(username, password):
             if session['priv'] == mod:
                 return 0
             else:
-                del session['priv']
-                return 2
+                return 3 #Already logged in
         if mod == 'teacher':
             t = teacher.auth(username, password)
             if t:

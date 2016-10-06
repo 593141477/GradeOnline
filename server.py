@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import urllib
 from functools import wraps
 from flask import request, Response, render_template, send_from_directory
 from flask import Flask, session, redirect, url_for
@@ -38,6 +39,9 @@ def authenticate():
     'You have to login with proper credentials', 401,
     {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
+def logout(returl):
+    return redirect('/logout/?url='+urllib.quote_plus(returl,''))
+
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -47,10 +51,19 @@ def requires_auth(f):
         ret = priv.check_auth(auth.username, auth.password)
         if ret==2:
             return authenticate()
+        elif ret==3:
+            return logout(request.path)
         elif ret != 0:
             return Response('No authorization', 403)
         return f(*args, **kwargs)
     return decorated
+
+@app.route('/logout/')
+def logout_handle():
+    url = request.args.get('url')
+    session.clear()
+    print url
+    return redirect(url)
 
 @app.route('/teacher/grades/<string:Id>')
 @requires_auth
