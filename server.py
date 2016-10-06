@@ -5,6 +5,7 @@ from functools import wraps
 from flask import request, Response, render_template, send_from_directory
 from flask import Flask, session, redirect, url_for
 from config import DEBUG, SECRET_KEY
+from helper import json_response
 
 app = Flask(__name__)
 
@@ -129,6 +130,11 @@ def admin_schedule_update():
     t = teacher.getTeachers()
     c = students.getClassList()
     return render_template('schedule.html', class_list = c, teacher_list = t, schedule=s)
+
+@app.route('/client/student/<int:Id>/grade')
+@requires_auth
+def client_student_grade(Id):
+    return json_response(0, grades.getGradesByStudentId(Id))
 
 app.secret_key = SECRET_KEY
 app.config['DEBUG']=DEBUG
