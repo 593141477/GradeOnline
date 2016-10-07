@@ -46,7 +46,13 @@
         $('#class_slt').val(class_id);
         $('#class_slt').change(function(E){
           var v = $(this).val();
-          location.href = './'+v;
+          if(v != class_id){
+            location.href = './'+v;
+            setTimeout(function(){
+              // console.log('timout')
+              $('#class_slt').val(class_id);
+            },500);
+          }
         });
       });
     </script>
