@@ -22,7 +22,9 @@ def bulkUpdate():
         glist.append({'student_id': sid, 'grade': v})
     tab.update({
         'class_id': sch['class_id'],
-        'date': sch['date'], 
+        'date.week': sch['date']['week'], 
+        'date.cod': sch['date']['cod'], 
+        'date.dow': sch['date']['dow'], 
         'teacher': sch['teacher']},
         {'$set':{'grade_list': glist}},
         upsert=True)
@@ -39,7 +41,9 @@ def getGradesByScheduleId(schedule_id):
             })
     g = tab.find_one({
         'class_id': sch['class_id'],
-        'date': sch['date'], 
+        'date.week': sch['date']['week'], 
+        'date.cod': sch['date']['cod'], 
+        'date.dow': sch['date']['dow'], 
         'teacher': sch['teacher']
         })
     if g:
@@ -59,7 +63,9 @@ def getGradesByStudentId(student_id):
         g = tab.find_one({
             'grade_list.student_id': student_id,
             'class_id': s['class_id'],
-            'date': s['date'], 
+            'date.week': s['date']['week'], 
+            'date.cod': s['date']['cod'], 
+            'date.dow': s['date']['dow'], 
             'teacher': s['teacher']
             },{'grade_list.$': 1})
         if g:
