@@ -26,31 +26,47 @@ for(i in teacher_list)
 }
 gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
 
+  $scope.dirty=-1;
   $scope.data = schedule;
   $scope.dataLoaded = true;
 
-
+  $scope.action_submit = function ($event) {
+    $http.post('schedule/update',JSON.stringify($scope.data)).then(function (response) {
+      if (response.data){
+        $scope.dirty=0;
+        alert("Submitted Successfully!");
+      }
+    }, function (response) {
+        alert("Error!!!");
+    });
+  };
+  $scope.DeleteRow = function(row) {
+    var index = $scope.data.indexOf(row.entity);
+    $scope.data.splice(index, 1);
+    $scope.dirty++;
+  };
   $scope.gridOptions = {
+    enableCellEditOnFocus: true,
     enableGridMenu: true,
     columnDefs: [
       // { name: 'date', displayName:'上课日期',type: 'shortdate', cellFilter: 'date:\'MM/dd\'', enableCellEdit: true},
-      { name: 'date.week', displayName:'周次', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '15%', editDropdownValueLabel: 'week', editDropdownOptionsArray:weekList},
-      { name: 'date.dow', displayName:'星期', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '15%', editDropdownValueLabel: 'dow', editDropdownOptionsArray:dayOfWeek},
-      { name: 'date.cod', displayName:'节数', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '15%', editDropdownValueLabel: 'cod', editDropdownOptionsArray:classOfDay},
-      { name: 'class_id', displayName:'班级', cellFilter:'classDisplay', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '20%', editDropdownValueLabel: 'class_name', editDropdownOptionsArray:metaClassList},
-      { name: 'teacher', displayName: '主讲教师', cellFilter:'teacherDisplay', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '20%', editDropdownValueLabel: 'teacher', editDropdownOptionsArray:metaTeacherList}
+      { name: 'date.week', displayName:'周次', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '10%', editDropdownValueLabel: 'week', editDropdownOptionsArray:weekList},
+      { name: 'date.dow', displayName:'星期', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '10%', editDropdownValueLabel: 'dow', editDropdownOptionsArray:dayOfWeek},
+      { name: 'date.cod', displayName:'节数', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '10%', editDropdownValueLabel: 'cod', editDropdownOptionsArray:classOfDay},
+      { name: 'class_id', displayName:'班级', cellFilter:'classDisplay', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '30%', editDropdownValueLabel: 'class_name', editDropdownOptionsArray:metaClassList},
+      { name: 'content', displayName: '内容', enableCellEdit: true, width: '15%'},
+      { name: 'teacher', displayName: '主讲教师', cellFilter:'teacherDisplay', enableCellEdit: true, editableCellTemplate: 'ui-grid/dropdownEditor', width: '15%', editDropdownValueLabel: 'teacher', editDropdownOptionsArray:metaTeacherList},
+      {
+          name: 'DeleteOp',
+          displayName: '删除',
+          width: '10%',
+          cellTemplate: '<button class="btn primary" ng-click="grid.appScope.DeleteRow(row)">删除</button>'
+      }
     ],
     gridMenuCustomItems: [
       {
         title: '提交',
-        action: function ($event) {
-          $http.post('schedule/update',JSON.stringify($scope.data)).then(function (response) {
-            if (response.data)
-              alert("Submitted Successfully!");
-          }, function (response) {
-              alert("Error!!!");
-          });
-        },
+        action: $scope.action_submit,
         order: 410
       },
       {
@@ -71,8 +87,22 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
     data: 'data',
     onRegisterApi: function(gridApi){
       $scope.gridApi = gridApi;
+      gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef){
+        $scope.dirty++;
+        // console.log($scope.dirty);
+      });
     }
   };
+  $scope.$watch('data', function(n,o){
+    $scope.dirty++;
+    // console.log($scope.dirty);
+  });
+  $scope.submit = function(){
+    $scope.action_submit();
+  };
+  window.onbeforeunload = function(){
+    return $scope.dirty<=0 ? null : '修改尚未保存，是否退出？';
+  }
 }])
 
 .filter('teacherDisplay', function () {

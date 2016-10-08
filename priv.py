@@ -4,6 +4,7 @@ from urlparse import urlparse
 import re
 import teacher
 from config import ADMIN_USERNAME, ADMIN_PASSWD
+from config import CLIENT_USERNAME, CLIENT_PASSWD
 
 pattern = re.compile(r'^/(\w+)\b')
 
@@ -15,8 +16,7 @@ def check_auth(username, password):
             if session['priv'] == mod:
                 return 0
             else:
-                del session['priv']
-                return 2
+                return 3 #Already logged in
         if mod == 'teacher':
             t = teacher.auth(username, password)
             if t:
@@ -24,10 +24,17 @@ def check_auth(username, password):
                 session['teacher_id'] = t
                 return 0
             return 2
+        elif mod == 'client':
+            if username==CLIENT_USERNAME and password==CLIENT_PASSWD:
+                session['priv'] = mod
+                return 0
+            return 2
         elif mod == 'admin':
             if username==ADMIN_USERNAME and password==ADMIN_PASSWD:
                 session['priv'] = mod
                 return 0
             return 2
+        else:
+            return -1
 
     return -1

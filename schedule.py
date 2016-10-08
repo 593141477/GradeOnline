@@ -24,6 +24,8 @@ def wrapQueryResult(result):
         s['_id']=str(s['_id'])
         s['teacher']=str(s['teacher'])
         s['class_id']=str(s['class_id'])
+        if 'content' in s:
+            s['content']=s['content']
         l.append(s)
     return l
 
@@ -37,7 +39,8 @@ def bulkUpdate():
         l.append({
             'teacher': ObjectId(s['teacher']),
             'date': s['date'],
-            'class_id': ObjectId(s['class_id'])
+            'class_id': ObjectId(s['class_id']),
+            'content': s['content'] if ('content' in s) else ''
             })
     ret = tab.insert_many(l)
     assert ret.acknowledged
@@ -45,6 +48,9 @@ def bulkUpdate():
     ret = tab.insert_many(l)
     assert ret.acknowledged
     
+def removeSchByClassId(cid):
+    tab = getTable(TABLE_NAME)
+    tab.remove({'class_id': ObjectId(cid)})
 
 def getAllstudents():
     tab = getTable(TABLE_NAME)

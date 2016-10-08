@@ -2,7 +2,7 @@ from flask import request, Response, session
 import logging
 from database import getTable
 from bson.objectid import ObjectId
-import schedule, students
+import schedule, students, teacher
 
 TABLE_NAME = 'grades'
 
@@ -49,3 +49,26 @@ def getGradesByScheduleId(schedule_id):
                 if slist[j]['student_id']==sid:
                     slist[j]['grade'] = item['grade']
     return slist
+
+def getGradesByStudentId(student_id):
+    sch = schedule.getSchedule()
+    sch = [s for s in sch]
+    ret = []
+    tab = getTable(TABLE_NAME)
+    for s in sch:
+        g = tab.find_one({
+            'grade_list.student_id': student_id,
+            'class_id': s['class_id'],
+            'date': s['date'], 
+            'teacher': s['teacher']
+            },{'grade_list.$': 1})
+        if g:
+            grade = g['grade_list'][0]['grade']
+            teacher_name = teacher.getTeacherById(s['teacher'])['name']
+            ret.append({
+                'date': s['date'], 
+                'teacher': teacher_name,
+                'content': (s['content'] if ('content' in s) else ''),
+                'grade': grade
+                })
+    return ret

@@ -17,22 +17,30 @@
   <body>
     <!-- <a href="./*">&lt; Back</a> -->
     <h3>Grades</h3>
-    <span>{{teacher.name}}</span>
+    <div>{{teacher.name}}</div>
     <select name="sch_slt" id="sch_slt">
       <option value="*"></option>
       {% for item in schedule_list %}
-      <option value="{{item._id}}">第{{item.date.week}}周周{{item.date.dow}}第{{item.date.cod}}节</option>
+      <option value="{{item._id}}">{{item.content}}&nbsp;-&nbsp;第{{item.date.week}}周周{{item.date.dow}}第{{item.date.cod}}节</option>
       {% endfor %}
     </select>
     <div ng-controller="MainCtrl">
       <div id="grid1" ui-grid="gridOptions" ui-grid-importer ui-grid-selection ui-grid-edit class="grid" ng-show="dataLoaded"></div>
       <div ng-hide="dataLoaded">Loading...</div>
+      <div ng-hide="dirty<=0"><button ng-click="submit()">保存</button></div>
+      <!-- <div><button ng-click="test()">Test</button></div> -->
     </div>
     <script>
         $('#sch_slt').val(schedule_id);
         $('#sch_slt').change(function(E){
           var v = $(this).val();
-          location.href = './'+v;
+          if(v != schedule_id){
+            location.href = './'+v;
+            setTimeout(function(){
+              // console.log('timout')
+              $('#sch_slt').val(schedule_id);
+            },500);
+          }
         });
     </script>
     <script src="../../static/js/grades.js"></script>

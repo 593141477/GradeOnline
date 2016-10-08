@@ -2,6 +2,7 @@ var gridApp = angular.module('app', ['ngAnimate', 'ngTouch', 'ui.grid', 'ui.grid
 
 gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
 
+  $scope.dirty=-1;
   if(typeof(students[0]) == "undefined"){
     $scope.data = [];
   }
@@ -12,9 +13,20 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
     $scope.data=students[0].students;
   }
   $scope.dataLoaded = true;
+  $scope.action_submit = function ($event) {
+    $http.post('./update',JSON.stringify({class_id:class_id, data:$scope.data})).then(function (response) {
+      if (response.data){
+        $scope.dirty = 0;
+        alert("Submitted Successfully!");
+      }
+    }, function (response) {
+        alert("Error!!!");
+    });
+  };
 
   $scope.gridOptions = {
     enableGridMenu: true,
+    enableCellEdit: true,
     columnDefs: [
       { name: 'student_name', displayName: '姓 名'},
       { name: 'student_id', displayName: '学 号'},
@@ -23,14 +35,7 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
     gridMenuCustomItems: [
       {
         title: '提交',
-        action: function ($event) {
-          $http.post('./update',JSON.stringify({class_id:class_id, data:$scope.data})).then(function (response) {
-            if (response.data)
-              alert("Submitted Successfully!");
-          }, function (response) {
-              alert("Error!!!");
-          });
-        },
+        action: $scope.action_submit,
         order: 410
       },
       // {
@@ -50,8 +55,16 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
     ],
     data: 'data',
     importerDataAddCallback: function ( grid, newObjects ) {
-      // console.log('importerDataAddCallback');
-      // console.log(newObjects)
+      var displayName2name = {};
+      $scope.gridOptions.columnDefs.forEach(function(value){
+        displayName2name[value.displayName] = value.name;
+      });
+      newObjects.forEach(function(row){
+        for(var prop in row){
+          if(displayName2name[prop]!==null)
+            row[displayName2name[prop]]=row[prop];
+        };
+      });
       $scope.data = $scope.data.concat( newObjects );
 
     },
@@ -73,9 +86,14 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
       $scope.gridApi = gridApi;
     },
   };
+  $scope.$watch('data', function(n,o){
+    $scope.dirty++;
+  });
+  $scope.submit = function(){
+    $scope.action_submit();
+  };
+  window.onbeforeunload = function(){
+    return $scope.dirty<=0 ? null : '修改尚未保存，是否退出？';
+  }
 
-  // $http.get('http://ui-grid.info/data/100.json').success(function(data) {
-  //   $scope.data = data;
-  //   $scope.dataLoaded = true;
-  // });
 }]);
