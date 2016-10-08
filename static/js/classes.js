@@ -16,9 +16,9 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', function ($scope
   $scope.gridOptions = {
     enableGridMenu: true,
     columnDefs: [
-      { name: 'student_name', displayName: '姓名'},
-      { name: 'student_id', displayName: '学号'},
-      { name: 'formal_class', displayName: '行政班级'},
+      { name: 'student_name', displayName: '姓 名'},
+      { name: 'student_id', displayName: '学 号'},
+      { name: 'formal_class', displayName: '班 级'},
     ],
     gridMenuCustomItems: [
       {
