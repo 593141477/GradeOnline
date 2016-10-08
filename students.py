@@ -3,6 +3,7 @@ import logging
 from database import getTable
 from bson.objectid import ObjectId
 import re
+import schedule
 
 TABLE_NAME = 'classes'
 
@@ -23,6 +24,13 @@ def new():
     tab = getTable(TABLE_NAME)
     tab.insert({'name': name, 'students': []})
 
+def del_class():
+    cid = request.form['id']
+    assert len(cid)>0
+    schedule.removeSchByClassId(cid)
+    tab = getTable(TABLE_NAME)
+    tab.remove({'_id': ObjectId(cid)})
+
 def bulkUpdate():
     errorNum=0
     succeNum=0
@@ -30,7 +38,6 @@ def bulkUpdate():
     post = request.get_json()
     classes = {}
 
-    print(post)
     class_id = ObjectId(post['class_id'])
 
     #put students with the same <class_id> into the same list

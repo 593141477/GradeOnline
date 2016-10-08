@@ -104,6 +104,12 @@ def admin_class_new():
     students.new()
     return 'success'
 
+@app.route('/admin/classes/del', methods=['POST'])
+@requires_auth
+def admin_class_del():
+    students.del_class()
+    return 'success'
+
 @app.route('/admin/teachers')
 @requires_auth
 def admin_teachers():

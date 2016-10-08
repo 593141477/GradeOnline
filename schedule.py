@@ -48,6 +48,9 @@ def bulkUpdate():
     ret = tab.insert_many(l)
     assert ret.acknowledged
     
+def removeSchByClassId(cid):
+    tab = getTable(TABLE_NAME)
+    tab.remove({'class_id': ObjectId(cid)})
 
 def getAllstudents():
     tab = getTable(TABLE_NAME)
