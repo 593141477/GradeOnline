@@ -14,7 +14,7 @@ def bulkUpdate():
     stu = students.getStudentIds(sch['class_id'])
     glist = []
     for item in post['data']:
-        sid = item['student_id']
+        sid = str(item['student_id'])
         assert sid in stu
         assert not(item['grade'] is None)
         v = float(item['grade'])
@@ -61,7 +61,7 @@ def getGradesByStudentId(student_id):
     tab = getTable(TABLE_NAME)
     for s in sch:
         g = tab.find_one({
-            'grade_list.student_id': student_id,
+            'grade_list.student_id': str(student_id),
             'class_id': s['class_id'],
             'date.week': s['date']['week'], 
             'date.cod': s['date']['cod'], 

@@ -45,6 +45,7 @@ def bulkUpdate():
         student.pop('$$hashKey',None)
         assert (student['student_id'])
         assert (student['student_name'])
+        student['student_id'] = str(student['student_id'])
 
     tab.update({'_id':class_id},{"$set":{'students': post['data']}})
 

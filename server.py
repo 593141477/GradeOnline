@@ -137,7 +137,7 @@ def admin_schedule_update():
     c = students.getClassList()
     return render_template('schedule.html', class_list = c, teacher_list = t, schedule=s)
 
-@app.route('/client/student/<int:Id>/grade')
+@app.route('/client/student/<string:Id>/grade')
 @requires_auth
 def client_student_grade(Id):
     return json_response(0, grades.getGradesByStudentId(Id))
