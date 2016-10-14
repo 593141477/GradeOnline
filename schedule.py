@@ -77,8 +77,8 @@ def sortByDate(schList):
         da = a['date']
         db = b['date']
         if da['week'] != db['week']:
-            return da['week'] < db['week']
+            return da['week'] - db['week']
         if da['dow'] != db['dow']:
-            return WEEKDAYS[da['dow']] < WEEKDAYS[db['dow']]
-        return da['cod'] < db['cod']
+            return WEEKDAYS[da['dow']] - WEEKDAYS[db['dow']]
+        return da['cod'] - db['cod']
     schList.sort(cmp=cmpDate)
