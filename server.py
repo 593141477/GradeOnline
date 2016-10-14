@@ -85,6 +85,13 @@ def teacher_submit():
 def admin_index():
     return render_template('admin.html')
 
+@app.route('/admin/report/<string:class_id>')
+@requires_auth
+def admin_report(class_id='*'):
+    class_list = students.getClassList()
+    l = grades.genReport(class_id) if class_id!='*' else []
+    return render_template('report.html',class_list=class_list,report = l, class_id = class_id)
+
 @app.route('/admin/classes/<string:class_id>')
 @requires_auth
 def admin_classes(class_id='*'):

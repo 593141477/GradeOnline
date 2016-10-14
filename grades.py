@@ -78,3 +78,37 @@ def getGradesByStudentId(student_id):
                 'grade': grade
                 })
     return ret
+
+def genReport(class_id):
+    sch = schedule.getScheduleByClass(class_id)
+    sch = [s for s in sch]
+    schedule.sortByDate(sch)
+    stu = students.getStudents(class_id)[0]['students']
+    stu = [s for s in stu]
+    sid2idx = {s['student_id']:idx for idx,s in enumerate(stu)}
+
+    grades = []
+    tab = getTable(TABLE_NAME)
+    for s in sch:
+        glist = tab.find_one({
+            'class_id': s['class_id'],
+            'date.week': s['date']['week'], 
+            'date.cod': s['date']['cod'], 
+            'date.dow': s['date']['dow'], 
+            'teacher': s['teacher']
+            },{'grade_list': 1})
+        target = [None]*len(stu)
+        if glist:
+            for g in glist['grade_list']:
+                if g['student_id'] in sid2idx:
+                    target[sid2idx[g['student_id']]] = g['grade']
+                else:
+                    print "{} not in class {}".format(g['student_id'], class_id)
+        grades.append({
+            'content': s['content'], 
+            'grades': target,
+            'date': s['date'],
+            })
+    return {'s': stu, 'g': grades}
+
+

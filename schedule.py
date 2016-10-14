@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import request,redirect
 import logging
 from database import getTable
@@ -6,6 +7,8 @@ import re
 
 TABLE_NAME = 'schedule'
 
+WEEKDAYS = {s:i for i,s in enumerate([u"一",u"二",u"三",u"四",u"五",u"六",u"日"])}
+
 def getSchedule():
     tab = getTable(TABLE_NAME)
     return tab.find()
@@ -13,6 +16,10 @@ def getSchedule():
 def getScheduleForTeacher(teacher_id):
     tab = getTable(TABLE_NAME)
     return tab.find({'teacher': ObjectId(teacher_id)})
+
+def getScheduleByClass(class_id):
+    tab = getTable(TABLE_NAME)
+    return tab.find({'class_id': ObjectId(class_id)})
 
 def getOneSchedule(schedule_id):
     tab = getTable(TABLE_NAME)
@@ -64,3 +71,14 @@ def getClassList():
         class_list.add(mClass['class_id'])
     class_list = list(class_list)
     return class_list
+
+def sortByDate(schList):
+    def cmpDate(a, b):
+        da = a['date']
+        db = b['date']
+        if da['week'] != db['week']:
+            return da['week'] < db['week']
+        if da['dow'] != db['dow']:
+            return WEEKDAYS[da['dow']] < WEEKDAYS[db['dow']]
+        return da['cod'] < db['cod']
+    schList.sort(cmp=cmpDate)

@@ -1,0 +1,47 @@
+<!doctype html>
+<html ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <title>Report</title>
+    <script src="../../static/js/jquery.js"></script>
+    <script src="../../static/js/Blob.js"></script>
+    <script src="../../static/js/FileSaver.js"></script>
+    <script src="../../static/js/jszip.js"></script>
+    <script src="../../static/js/xlsx.js"></script>
+    <script src="../../static/js/angular.js"></script>
+    <script src="../../static/js/angular-touch.js"></script>
+    <script src="../../static/js/angular-animate.js"></script>
+    <script src="../../static/js/csv.js"></script>
+    <script src="../../static/js/ui-grid.js"></script>
+    <link rel="stylesheet" href="../../static/css/ui-grid.css" type="text/css">
+    <link rel="stylesheet" href="../../static/css/grid-students.css" type="text/css">
+    <script> report={{report|tojson}}; class_id='{{class_id}}'; class_list={{class_list|tojson}};</script>
+  </head>
+
+  <body>
+    <a href="..">&lt; Back</a>
+    <h3>Report</h3>
+    <select name="class_slt" id="class_slt">
+      <option value="*"></option>
+      {% for item in class_list %}
+      <option value="{{item._id}}">{{item.name}}</option>
+      {% endfor %}
+    </select>
+    <div ng-controller="MainCtrl">
+      <div id="grid1" ui-grid="gridOptions" ui-grid-importer ui-grid-selection ui-grid-edit class="grid" ng-show="dataLoaded"></div>
+      <div ng-hide="dataLoaded">Loading...</div>
+    </div>
+    <script src="../../static/js/report.js"></script>
+    <script>
+      $(function(){
+        $('#class_slt').val(class_id);
+        $('#class_slt').change(function(E){
+          var v = $(this).val();
+          if(v != class_id){
+            location.href = './'+v;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
