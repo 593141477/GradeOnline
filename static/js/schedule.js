@@ -1,4 +1,4 @@
-var gridApp = angular.module('app', ['ngAnimate', 'ngTouch', 'ui.grid', 'ui.grid.edit']);
+var gridApp = angular.module('app', ['ngAnimate', 'ngTouch', 'ui.grid', 'ui.grid.edit', 'ui.grid.importer']);
 
 weekList = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
 for(i in weekList){
@@ -175,6 +175,64 @@ gridApp.controller('MainCtrl', ['$scope', '$http', '$interval', '$filter', funct
       }
     ],
     data: 'data',
+    importerDataAddCallback: function ( grid, newObjects ) {
+      var displayName2name = {};
+      $scope.gridOptions.columnDefs.forEach(function(value){
+        displayName2name[value.displayName] = value.name;
+      });
+      var newData = [];
+      newObjects.forEach(function(row){
+        var item = {date: {} };
+        for(var prop in row){
+          if(displayName2name[prop]!==null)
+            row[displayName2name[prop]]=row[prop];
+        };
+        try  {
+          function mapping(value, arr, field) {
+            for (var i = arr.length - 1; i >= 0; i--) {
+              if(arr[i][field] == value)
+                return arr[i]['id'];
+            }
+            throw value+' not found in '+field;
+          }
+          for (var i = 0; i < $scope.gridOptions.columnDefs.length; i++) {
+            var cdef = $scope.gridOptions.columnDefs[i];
+            if(cdef.name == 'DeleteOp') continue;
+            if(!(cdef.name in row))
+              throw cdef.name+' is empty!'
+            var data = (''+row[cdef.name]).trim();
+            if(data===''){
+              console.log('empty line found');
+              return;
+            }
+            switch(cdef.name){
+              case 'class_id':
+                data = mapping(data, metaClassList, 'class_name');
+                break;
+              case 'teacher':
+                data = mapping(data, metaTeacherList, 'teacher');
+                break;
+              case 'date.week':
+                data = mapping(data, weekList, 'week');
+                break;
+              case 'date.dow':
+                data = mapping(data, dayOfWeek, 'dow');
+                break;
+              case 'date.cod':
+                data = mapping(data, classOfDay, 'cod');
+                break;
+            }
+            eval('item.'+cdef.name+'=data');
+          }
+          newData.push(item);
+        }
+        catch(exception) {
+          alert(exception);
+          throw 'abort';
+        }
+      });
+      $scope.data = newData;
+    },
     onRegisterApi: function(gridApi){
       $scope.gridApi = gridApi;
       gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef){
